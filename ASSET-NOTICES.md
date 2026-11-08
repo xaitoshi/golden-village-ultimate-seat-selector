@@ -1,0 +1,2 @@
+Three.js: MIT license; see THREE-LICENSE.txt.
+The two auditorium photographs, seating map and Golden Village logo were supplied by the owner as visual references. No original image license was supplied. Their copyright/trademark rights remain with their respective owners; use here does not imply endorsement. Reference images carry their original watermarks. The application is an unofficial approximate study with no live booking.
