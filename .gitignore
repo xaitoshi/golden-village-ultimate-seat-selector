@@ -4,3 +4,4 @@ bundle.js
 .vercel/
 .env*
 *.zip
+sia-bundle.js

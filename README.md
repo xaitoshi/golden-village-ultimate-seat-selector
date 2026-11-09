@@ -31,3 +31,10 @@ app.js, model.cjs, index.template.html, build.cjs: editable source.
 Test coverage: 56 unique slots, 54 chairs + 2 bays at G3/G6, straight row coordinates, four-pair aisle spacing, all illustrative availability, valid F8, metrics/easing, source-executed single/doubleclick transitions and guards. Build validation also checks exact embedded logo bytes, contain scaling, and removal of former venue/red-seat theme.
 
 Browser rendering has not been visually verified by the executor. Geometry/proportions remain estimates, especially arm-console spacing, handrail positioning and aisle boundaries. No deployment or public publishing performed.
+
+## Study 02 — SIA-style 2027 Business Class (unofficial fan concept), served at /sia/
+Tab switcher at the top of both pages: GV Funan Deluxe | SIA Business. Not affiliated with or endorsed by Singapore Airlines.
+Source: sia.js, sia-model.cjs, sia.template.html (built to sia/index.html; dist/sia/index.html). Tests: node test-sia.cjs.
+Interactions mirror the cinema: drag to orbit, scroll to zoom, click to select, double-click a suite (or Sit here) to fly into its seated POV; drag to look around, Escape/Change seat to return.
+Published facts used (reports of the 6 Nov 2026 unveiling): 1-2-1 direct aisle access; sliding doors; 52 in shell/door height; 50 in pitch; 22 in seat width and 22 in 4K OLED screen (A350); window suites alternating window-/aisle-aligned; electronically lowerable divider for companion centre pairs; 42 Business seats on the A350-900 long-haul.
+Assumed: row numbering reuses today's A350 LH Business map (11–17, 18–22, no 13, row 18 centre only); which rows are companion pairs; suite footprint, console and screen placement; colours/materials from the owner's renders; bulkhead artwork is an abstract bird/arrow impression, not the airline logo; IFE content is a placeholder.
