@@ -5,3 +5,4 @@ bundle.js
 .env*
 *.zip
 sia-bundle.js
+sis-bundle.js
