@@ -1,8 +1,20 @@
-# SeatScope — GV Funan Deluxe approximate study
+# Seatwise — see your seat before you book
+Unofficial fan concept. Interactive 3D seat previews: pick a seat, double-click to sit in it and look around. Live at https://seatsinsg.vercel.app (Vercel project and GitHub repo keep their original names).
+
+## Site structure
+- `/` — landing page (landing.template.html → index.html): hero slideshow (auto-play, arrows/dots, keyboard, swipe, pause on hover/focus/hidden tab, no auto-play with reduced motion), captions linking into each viewer, three viewer cards, unofficial-concept footer.
+- `/movie/` — Study 01, GV Funan Deluxe cinema (index.template.html → movie/index.html). Moved from `/`; old `/?seat=…` or `/#E4`-style links are forwarded to `/movie/`.
+- `/sia/` — Study 02, SIA-style 2027 Business. `/sis/` — Study 03, Singapore Indoor Stadium · BABYMONSTER [CHOOM].
+- Every viewer accepts `?seat=<id>` (e.g. `/sis/?seat=220-17-6`, `/sia/?seat=14D`, `/movie/?seat=E4`) to preselect a seat.
+- Shared tab bar on every page: ◉ Seatwise (home) | Cinema | SIA Business | Indoor Stadium. Favicon: favicon.svg + favicon.ico. OG image: assets/og.jpg.
+- Slides in assets/slides are rendered from Seatwise's own viewers with `render-slides.cjs` (headless Chrome, UI hidden) and converted by `optimize-slides.py` to WebP 1600w + 800w. No venue, airline, press or reference photos are used.
+- Build: `npm run build` (build.cjs + publish-build.cjs → dist/, including a static `vercel.json` with `trailingSlash: true`). Tests: `npm test` (cinema, interaction, SIA, SIS, site).
+
+## Study 01 — GV Funan Deluxe approximate study, served at /movie/
 Independent prototype • approximate geometry • no live booking.
 
 ## Play
-Open index.html directly in a modern WebGL browser. All Three.js, app JS, styles, screen logo and three reference images are embedded; no network dependencies.
+Open movie/index.html in a modern WebGL browser (served at /movie/). All Three.js, app JS, styles, screen logo and three reference images are embedded; no network dependencies.
 Double-click any seat or wheelchair bay to select it and dive directly into its view. Single-click selects only; See the view is retained for mobile/keyboard. Change seat smoothly reverses the camera. POV drag looks around; double-click re-centres; Escape returns to map. Tab/Enter/Space operate the overlaid seat selectors. Reduced motion skips the transition. WebGL failure exposes simplified selectors with estimated metrics, not a fake 3D view.
 
 ## Supplied references
@@ -26,21 +38,21 @@ node test.cjs
 node test-interaction.cjs
 python3 -m http.server 8137 --bind 0.0.0.0
 
-index.html: self-contained playable deliverable.
+movie/index.html: self-contained playable deliverable.
 app.js, model.cjs, index.template.html, build.cjs: editable source.
 Test coverage: 56 unique slots, 54 chairs + 2 bays at G3/G6, straight row coordinates, four-pair aisle spacing, all illustrative availability, valid F8, metrics/easing, source-executed single/doubleclick transitions and guards. Build validation also checks exact embedded logo bytes, contain scaling, and removal of former venue/red-seat theme.
 
 Browser rendering has not been visually verified by the executor. Geometry/proportions remain estimates, especially arm-console spacing, handrail positioning and aisle boundaries. No deployment or public publishing performed.
 
 ## Study 02 — SIA-style 2027 Business Class (unofficial fan concept), served at /sia/
-Tab switcher at the top of both pages: GV Funan Deluxe | SIA Business. Not affiliated with or endorsed by Singapore Airlines.
+Shared tab bar (see Site structure). Not affiliated with or endorsed by Singapore Airlines.
 Source: sia.js, sia-model.cjs, sia.template.html (built to sia/index.html; dist/sia/index.html). Tests: node test-sia.cjs.
 Interactions mirror the cinema: drag to orbit, scroll to zoom, click to select, double-click a suite (or Sit here) to fly into its seated POV; drag to look around, Escape/Change seat to return.
 Published facts used (reports of the 6 Nov 2026 unveiling): 1-2-1 direct aisle access; sliding doors; 52 in shell/door height; 50 in pitch; 22 in seat width and 22 in 4K OLED screen (A350); window suites alternating window-/aisle-aligned; electronically lowerable divider for companion centre pairs; 42 Business seats on the A350-900 long-haul.
 Layout v2 follows the owner-supplied seat map: 40 suites, rows 11,12,14–18 forward and 19–21 rear (map ends at 21); companion rows 11/14/16/18/19/21 (A/K aisle-side, D+F together), window rows 12/15/17/20 (A/K by window, D/F split); front LAV/GALLEY/GALLEY, mid LAV + EXITs, bassinets at 19A/19K. Aisles (~0.95 m) and row spacing (1.55 m) are exaggerated for walkway clarity; fuselage widened to fit. Assumed: suite footprint, console and screen placement; colours/materials from the owner's renders; bulkhead artwork is an abstract bird/arrow impression, not the airline logo; IFE content is a placeholder.
 
 ## Study 03 — Singapore Indoor Stadium · 2026 BABYMONSTER World Tour [CHOOM] (unofficial fan concept), served at /sis/
-Tab switcher on all pages: GV Funan Deluxe | SIA Business | Indoor Stadium. Not affiliated with BABYMONSTER, YG Entertainment, Live Nation, Ticketmaster or The Kallang / Singapore Sports Hub. No booking; prices exclude booking fees.
+Shared tab bar (see Site structure). Not affiliated with BABYMONSTER, YG Entertainment, Live Nation, Ticketmaster or The Kallang / Singapore Sports Hub. No booking; prices exclude booking fees.
 Source: sis.js, sis-model.cjs, sis-plan.json, sis.template.html (built to sis/index.html; dist/sis/index.html). Tests: node test-sis.cjs.
 Interactions: drag to orbit, scroll/pinch to zoom, hover for a tooltip, click a seat or standing pen to select it (section, row, seat, category, price, distance, view type), double-click (or View from here) to fly to that seat's eye point looking at the stage; drag to look around, scroll to change FOV, Escape / Back to map to return. Section → row → seat pickers and a legend (click a category to highlight it; venue/ticket colour toggle).
 Sourced: section list, categories and prices from the official BABYMONSTER [CHOOM] SIS seat plan (stage south with T-runway; Pen B west / Pen A east, VIP Standing in front of CAT 1 Standing; PA1–PA3 VIP Seated with CAT 2 floor seats; FOH north; L2 208–234, L3 308–314/318–320/322–324/328–334, no 321, no 100s). Section outlines re-projected from the public Pacifa seat-view top image; continuous rows (L2 13–27, L3 28–36) and published seat counts for 208/210/214/220/224/231/234/308/310/314/322/328/334. Roof: Kenzo Tange diamond pagoda (≈200 × 120 m, 45 m high, ≈39 m ceiling) with space frame and central light trough.

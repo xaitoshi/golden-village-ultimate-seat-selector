@@ -1,4 +1,4 @@
-// SeatScope · Study 03 — Singapore Indoor Stadium, 2026 BABYMONSTER World Tour [CHOOM] (South Stage).
+// Seatwise · Study 03 — Singapore Indoor Stadium, 2026 BABYMONSTER World Tour [CHOOM] (South Stage).
 // Unofficial fan concept: not affiliated with BABYMONSTER, YG Entertainment, Live Nation, Ticketmaster or The Kallang.
 import * as THREE from 'three';
 import model from './sis-model.cjs';

@@ -39,11 +39,10 @@ const s220=m.byId.get('220-17-6'),s322=m.byId.get('322-30-6');assert(m.eyeOf(s32
 const d=m.stageDistance(s220);assert(d>40&&d<70,'220 distance '+d);
 const pen=m.zoneSpot(m.ZONES[0]);assert.equal(m.eyeOf(pen)[1],m.RAKE.standEye);assert(m.info(pen).standing);
 assert.equal(m.smooth(0),0);assert.equal(m.smooth(1),1);
-// Built page: three-tab nav on every page, no embedded raster images on the SIS page, disclaimer present
+// Built page: nav on every page, no embedded raster images on the SIS page, disclaimer present
 const sis=fs.readFileSync('sis/index.html','utf8');
-assert.match(sis,/<a href="\.\.\/">GV Funan Deluxe<\/a><a href="\.\.\/sia\/">SIA Business<\/a><a href="\.\/" aria-current="page">Indoor Stadium<\/a>/);
-assert.match(fs.readFileSync('sia/index.html','utf8'),/<a href="\.\.\/sis\/">Indoor Stadium<\/a>/);assert.match(fs.readFileSync('index.html','utf8'),/<a href="\.\/sis\/">Indoor Stadium<\/a>/);
+assert.match(sis,/<a href="\/sis\/" aria-current="page">Indoor Stadium<\/a>/);assert.match(sis,/<title>Seatwise — /);
 assert(!/data:image\/(png|jpe?g|webp)/.test(sis),'no embedded photos/plan on SIS page');assert(!/<img/i.test(sis));
 assert.match(sis,/not affiliated with BABYMONSTER, YG Entertainment, Live Nation, Ticketmaster or The Kallang/);assert.match(sis,/not-to-scale plan/);assert.match(sis,/excl\. booking fees/);
 assert(!fs.readdirSync('.').some(f=>/babymonster|official-seat-plan/i.test(f)),'reference images not in repo');
-console.log(`PASS: SIS section list (${stands.length}, no 321/100s), categories & prices, pens/PA/FOH/stage layout, continuous rows, published seat counts, rake, ${m.seats.length} unique seats, POV eye heights, restricted flags, three-tab nav, no embedded images.`);
+console.log(`PASS: SIS section list (${stands.length}, no 321/100s), categories & prices, pens/PA/FOH/stage layout, continuous rows, published seat counts, rake, ${m.seats.length} unique seats, POV eye heights, restricted flags, nav, no embedded images.`);

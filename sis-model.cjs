@@ -1,4 +1,4 @@
-// SeatScope · Study 03 — Singapore Indoor Stadium, BABYMONSTER [CHOOM] 28–29 Nov 2026 (south-stage plan).
+// Seatwise · Study 03 — Singapore Indoor Stadium, BABYMONSTER [CHOOM] 28–29 Nov 2026 (south-stage plan).
 // Unofficial fan concept. Section polygons are derived from the public Pacifa seat-view top image (perspective aerial,
 // re-projected to metres with an estimated scale); rake, heights and floor layout are approximations.
 const PLAN=require('./sis-plan.json');

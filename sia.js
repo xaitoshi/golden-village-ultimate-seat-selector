@@ -1,4 +1,4 @@
-// SeatScope · Study 02 — unofficial fan concept of Singapore Airlines' next-generation (2027) Business Class.
+// Seatwise · Study 02 — unofficial fan concept of Singapore Airlines' next-generation (2027) Business Class.
 // Not affiliated with or endorsed by Singapore Airlines. Geometry is estimated; see README.
 import * as THREE from 'three';
 import model from './sia-model.cjs';
