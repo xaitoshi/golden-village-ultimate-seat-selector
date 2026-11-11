@@ -16,6 +16,10 @@ const S=vm.runInNewContext(script.match(/var S=(\[[\s\S]*?\]);/)[1]);assert(S.le
 const seen=new Set();for(const s of S){assert(/^\/(movie|sia|sis)\//.test(s.href),s.href);assert(s.k&&s.t&&s.alt);for(const f of [s.img+'.webp',s.img+'-800.webp']){const p=path.join('assets/slides',f);assert(fs.existsSync(p),p);const b=fs.readFileSync(p);assert.equal(b.subarray(8,12).toString(),'WEBP',p);assert(b.length<260000,p+' too large');}seen.add(s.href.split('/')[1]);}
 assert.deepEqual([...seen].sort(),['movie','sia','sis'],'slides cover all three viewers');
 for(const v of ['/movie/','/sia/','/sis/'])assert(land.includes(`class="card" href="${v}"`),'card '+v);
+assert.match(land,/href="https:\/\/www\.linkedin\.com\/in\/anthony-ng-yp"/,'linkedin href');
+assert.match(land,/<a class="btn ghost" href="https:\/\/www\.linkedin\.com\/in\/anthony-ng-yp" target="_blank" rel="noopener noreferrer">/,'linkedin button attrs');
+assert.match(land,/>LinkedIn<\/a>/,'linkedin label');
+
 assert.match(land,/id="prev"/);assert.match(land,/id="next"/);assert.match(land,/touchstart/);assert.match(land,/mouseenter/);
 // No reference photos: slide/asset bytes differ from every reference image on disk, and no reference image names in assets
 const refDirs=['/workspace/stadium-ref'];const refHashes=new Set();const walk=d=>{if(!fs.existsSync(d))return;for(const e of fs.readdirSync(d,{withFileTypes:true})){const p=path.join(d,e.name);if(e.isDirectory())walk(p);else if(/\.(png|jpe?g|webp)$/i.test(e.name))refHashes.add(crypto.createHash('sha1').update(fs.readFileSync(p)).digest('hex'));}};refDirs.forEach(walk);for(const f of fs.readdirSync('.').filter(f=>/\.(png|jpe?g)$/i.test(f)))refHashes.add(crypto.createHash('sha1').update(fs.readFileSync(f)).digest('hex'));
