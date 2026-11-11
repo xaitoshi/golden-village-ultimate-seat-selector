@@ -70,7 +70,7 @@ const ZONES=[ // standing pens: VIP standing (front, magenta) and CAT 1 standing
  {id:'PEN-A-CAT1',pen:'A',name:'Standing Pen A',cat:'CAT1',x0:-15.5,x1:-2.4,z0:-12.2,z1:-6.2}];
 const FLOOR_BLOCKS=[ // seated floor blocks: rows numbered from the stage
  {id:'PA3',cat:'VIP',x0:6,x1:15.4,z0:-1.8,z1:8.2},{id:'PA2',cat:'VIP',x0:-4.6,x1:4.6,z0:-3.4,z1:6.6},{id:'PA1',cat:'VIP',x0:-15.4,x1:-6,z0:-1.8,z1:8.2},
- {id:'C2-W',name:'CAT 2 (west)',cat:'CAT2',x0:6,x1:15.4,z0:8.8,z1:12.4},{id:'C2-C',name:'CAT 2 (centre)',cat:'CAT2',x0:-4.6,x1:4.6,z0:7.2,z1:10},{id:'C2-E',name:'CAT 2 (east)',cat:'CAT2',x0:-15.4,x1:-6,z0:8.8,z1:12.4}];
+ {id:'C2-W',name:'CAT 2 floor, west',cat:'CAT2',x0:6,x1:15.4,z0:8.8,z1:12.4},{id:'C2-C',name:'CAT 2 floor, centre',cat:'CAT2',x0:-4.6,x1:4.6,z0:7.2,z1:10},{id:'C2-E',name:'CAT 2 floor, east',cat:'CAT2',x0:-15.4,x1:-6,z0:8.8,z1:12.4}];
 const FOH={x0:-8.5,x1:3.5,z0:15.5,z1:19};
 const FLOOR_PITCH=.9;
 for(const b of FLOOR_BLOCKS){const nRows=Math.floor((b.z1-b.z0)/FLOOR_PITCH),nSeats=Math.floor((b.x1-b.x0-.4)/SEAT_W);b.rows=[];b.seatCount=0;b.level=0;

@@ -10,18 +10,19 @@ let selected=byId.get('220-20-6'),pov=false,progress=0,transition=null,renderer,
 const orbit={theta:.42,phi:.8,zoom:1};
 const secById=new Map(sections.map(s=>[s.id,s]));
 const seatIndex=new Map(seats.map((s,i)=>[s,i]));
-const fmt=s=>s.zone?`${s.name}`:s.floor?`${s.sec} · Row ${s.row} · Seat ${s.n}`:`${s.sec} · Row ${s.row} · Seat ${s.n}`;
+const secName=id=>{const x=secById.get(id);return x&&x.block&&x.block.name||id;};
+const fmt=s=>s.zone?`${s.name}`:s.floor?`${secName(s.sec)}, Row ${s.row}, Seat ${s.n}`:`Section ${s.sec}, Row ${s.row}, Seat ${s.n}`;
 function update(){const m=info(selected),c=CATS[selected.cat];
- $('seat-name').innerHTML=selected.zone?`${selected.name} <span style="font-size:12px;color:#96a29f">/ standing</span>`:`${selected.floor?selected.sec:'Sec '+selected.sec} <span style="font-size:12px;color:#96a29f">/ Row ${selected.row} · Seat ${selected.n}</span>`;
+ $('seat-name').innerHTML=selected.zone?`${selected.name} <span style="font-size:12px;color:#96a29f">/ standing</span>`:`${selected.floor?secName(selected.sec):'Sec '+selected.sec} <span style="font-size:12px;color:#96a29f">/ Row ${selected.row}, Seat ${selected.n}</span>`;
  $('mcat').innerHTML=`<i class="chip" style="background:${c.color}"></i>${c.name.replace(' (Restricted View)','')}`;$('mprice').textContent=`S$${c.price}`;$('mdist').textContent=`≈${m.distance} m`;
  $('mview').innerHTML=m.restricted?'<span class="warn">Restricted (side)</span>':m.standing?'Standing · free':selected.floor?'Floor · flat':`Level ${selected.level} · raked`;
- $('est').textContent=selected.zone?'Pen size approximate':m.sourced?'Seat count from seat-view data':'Approximate geometry';
+ $('est').textContent=selected.zone?'Pen size approximate':m.sourced?'Seat count from seat view data':'Approximate geometry';
  syncPicker();paint();}
 function choose(s){if(!s||transition||pov)return;selected=s;update();}
 function enterSeat(s){if(!s||transition||pov||!renderer)return;choose(s);$('continue').onclick();}
 // ---- Picker (section → row → seat)
 const pickList=[...sections.filter(s=>s.floor),...ZONES.map(z=>({id:z.id,zone:z})),...sections.filter(s=>!s.floor)];
-for(const p of pickList){const o=document.createElement('option');o.value=p.id;const c=CATS[(p.zone||p).cat];o.textContent=p.zone?`${p.zone.name} · ${c.name}`:p.floor?`${p.id} · ${c.name}`:`${p.id} · ${c.name.replace(' (Restricted View)',' (restricted)')}`;$('psec').append(o);}
+for(const p of pickList){const o=document.createElement('option');o.value=p.id;const c=CATS[(p.zone||p).cat];o.textContent=p.zone?`${p.zone.name} · ${c.name}`:p.floor?(p.block&&p.block.name||`${p.id} · ${c.name}`):`${p.id} · ${c.name.replace(' (Restricted View)',' (restricted)')}`;$('psec').append(o);}
 function rowsFor(id){const s=secById.get(id);return s?s.rows.filter(r=>seats.some(x=>x.sec===id&&x.row===r)):[];}
 function syncPicker(){const id=selected.zone||selected.sec;$('psec').value=id;const rows=rowsFor(id);$('prow').innerHTML='';$('prow').disabled=!rows.length;$('pseat').disabled=!rows.length;
  for(const r of rows){const o=document.createElement('option');o.value=o.textContent=r;$('prow').append(o);}

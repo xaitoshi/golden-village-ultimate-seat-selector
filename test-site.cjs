@@ -3,7 +3,7 @@ const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypt
 const pages={'/':'index.html','/movie/':'movie/index.html','/sia/':'sia/index.html','/sis/':'sis/index.html'};
 const navRe=/<nav class="tabs" aria-label="Seatwise">([\s\S]*?)<\/nav>/;
 for(const [route,file] of Object.entries(pages)){const h=fs.readFileSync(file,'utf8');
- assert.match(h,/<title>Seatwise — [^<]+<\/title>/,file);assert(!/SeatScope|seat<span>scope/.test(h),'old brand in '+file);assert.match(h,/seat<span>wise<\/span>/,file);
+ assert.match(h,/<title>Seatwise \| [^<]+<\/title>/,file);assert(!/SeatScope|seat<span>scope/.test(h),'old brand in '+file);assert.match(h,/seat<span>wise<\/span>/,file);
  assert.match(h,/<link rel="icon" href="\/favicon\.svg"/,file);assert.match(h,/<meta property="og:title" content="Seatwise/,file);assert.match(h,/<meta property="og:image" content="https:\/\/seatsinsg\.vercel\.app\/assets\/og\.jpg"/,file);
  const nav=h.match(navRe)[1];const links=[...nav.matchAll(/<a href="([^"]+)"([^>]*)>/g)].map(m=>[m[1],/aria-current="page"/.test(m[2])]);
  assert.deepEqual(links.map(l=>l[0]),['/','/movie/','/sia/','/sis/'],file);assert.deepEqual(links.filter(l=>l[1]).map(l=>l[0]),[route],file+' current tab');
@@ -21,8 +21,16 @@ assert.match(land,/id="prev"/);assert.match(land,/id="next"/);assert.match(land,
 const refDirs=['/workspace/stadium-ref'];const refHashes=new Set();const walk=d=>{if(!fs.existsSync(d))return;for(const e of fs.readdirSync(d,{withFileTypes:true})){const p=path.join(d,e.name);if(e.isDirectory())walk(p);else if(/\.(png|jpe?g|webp)$/i.test(e.name))refHashes.add(crypto.createHash('sha1').update(fs.readFileSync(p)).digest('hex'));}};refDirs.forEach(walk);for(const f of fs.readdirSync('.').filter(f=>/\.(png|jpe?g)$/i.test(f)))refHashes.add(crypto.createHash('sha1').update(fs.readFileSync(f)).digest('hex'));
 for(const f of fs.readdirSync('assets/slides').concat(['../og.jpg'])){const h=crypto.createHash('sha1').update(fs.readFileSync(path.join('assets/slides',f))).digest('hex');assert(!refHashes.has(h),'reference image reused: '+f);}
 assert(!fs.readdirSync('assets/slides').some(f=>/official|straits|reference|wiki/i.test(f)));
+// Copy style: no dashes (hyphen as punctuation, en dash, em dash, hyphenated words) in user-visible text
+const DASH=/[–—]|\s-\s|[A-Za-z]-[A-Za-z]|\d-\d/;const visible=h=>{const out=[];const b=h.replace(/<style>[\s\S]*?<\/style>/g,'').replace(/<script>[\s\S]*?<\/script>/g,'');
+ for(const m of b.matchAll(/>([^<>]+)</g))if(m[1].trim())out.push(m[1].trim());for(const m of b.matchAll(/\s(?:title|alt|aria-label|placeholder)="([^"]*)"/g))out.push(m[1]);
+ for(const m of b.matchAll(/<meta (?:name|property)="(description|og:title|og:description|og:site_name)" content="([^"]*)"/g))out.push(m[2]);return out;};
+for(const file of Object.values(pages))for(const t of visible(fs.readFileSync(file,'utf8')))assert(!DASH.test(t),`dash in visible copy of ${file}: ${t}`);
+for(const s of S)for(const k of ['k','t','s','alt'])assert(!DASH.test(s[k]),`dash in slide ${s.img}.${k}: ${s[k]}`);
+{const sm=require('./sis-model.cjs'),am=require('./sia-model.cjs');for(const c of Object.values(sm.CATS))assert(!DASH.test(c.name),c.name);for(const z of [...sm.ZONES,...sm.FLOOR_BLOCKS])if(z.name)assert(!DASH.test(z.name),z.name);
+ for(const s of am.seats||[]){const i=am.info?am.info(s):s;for(const v of [i.type,i.cabin])if(v)assert(!DASH.test(v),v);}}
 // Favicon
 assert.match(fs.readFileSync('favicon.svg','utf8'),/^<svg /);const ico=fs.readFileSync('favicon.ico');assert.equal(ico.readUInt16LE(2),1,'ICO type');
 // Static output config: trailing slashes so /movie -> /movie/
 assert.equal(JSON.parse(fs.readFileSync('vercel.json','utf8')).trailingSlash,true);
-console.log(`PASS site: 4 routes (/, /movie/, /sia/, /sis/) with shared Seatwise nav + current tab, titles/OG/favicon, ?seat= deep links, landing ${S.length} slides (WebP 1600w+800w, all 3 viewers), 3 cards, carousel controls, no reference images, favicon.ico/svg, trailing-slash config.`);
+console.log(`PASS site: 4 routes (/, /movie/, /sia/, /sis/) with shared Seatwise nav + current tab, titles/OG/favicon, ?seat= deep links, landing ${S.length} slides (WebP 1600w+800w, all 3 viewers), 3 cards, carousel controls, no reference images, favicon.ico/svg, trailing slash config, no dashes in visible copy.`);

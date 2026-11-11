@@ -15,9 +15,9 @@ const seats=[];
 for(const row of ROWS){const comp=COMPANION.has(row);
   for(const L of ['A','D','F','K']){
     const win=L==='A'||L==='K',side=(L==='A'||L==='D')?-1:1;let x,type,consoleSide;
-    if(win){x=SUITE_X[L]+(comp?-side*.19:side*.19);type=comp?'Window · aisle-side':'Window · true window';consoleSide=comp?side:-side;} // consoleSide: x-direction from seat to console
-    else{x=comp?side*.33:side*.62;type=comp?'Centre · companion pair':'Centre · aisle-side';consoleSide=comp?side:-side;}
-    seats.push({id:row+L,row,letter:L,x,suiteX:SUITE_X[L],suiteW:win?WIN_W:CEN_W,z:rowZ(row),window:win,side,comp,type,consoleSide,bassinet:row===19&&win,cabin:row<=18?'Forward · rows 11–18':'Rear · rows 19–21',taken:false});}}
+    if(win){x=SUITE_X[L]+(comp?-side*.19:side*.19);type=comp?'Window · aisle side':'Window · true window';consoleSide=comp?side:-side;} // consoleSide: x-direction from seat to console
+    else{x=comp?side*.33:side*.62;type=comp?'Centre · companion pair':'Centre · aisle side';consoleSide=comp?side:-side;}
+    seats.push({id:row+L,row,letter:L,x,suiteX:SUITE_X[L],suiteW:win?WIN_W:CEN_W,z:rowZ(row),window:win,side,comp,type,consoleSide,bassinet:row===19&&win,cabin:row<=18?'Forward · rows 11 to 18':'Rear · rows 19 to 21',taken:false});}}
 function info(s){return {type:s.type,cabin:s.cabin,companion:!s.window&&s.comp};}
 // Bed mode pose for b in [0,1]: backrest reclines flat, seat slides forward, legrest rises, bedding fades in late.
 function bedPose(b){b=Math.max(0,Math.min(1,b));return {backAngle:.16+(Math.PI/2-.16)*b,slide:-.48*b,legAngle:-1.35*(1-b),ottomanY:.3+.17*b,bedding:Math.max(0,Math.min(1,(b-.55)/.45)),headScale:1-.7*b,cushionScale:1-b};}
