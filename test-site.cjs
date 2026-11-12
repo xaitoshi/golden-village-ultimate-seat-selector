@@ -20,7 +20,8 @@ assert.match(land,/href="https:\/\/www\.linkedin\.com\/in\/anthony-ng-yp"/,'link
 assert.match(land,/<a class="btn ghost linkedin" href="https:\/\/www\.linkedin\.com\/in\/anthony-ng-yp" target="_blank" rel="noopener noreferrer" aria-label="Connect with the dev" title="Connect with the dev">/,'linkedin button attrs');
 assert.match(land,/<span class="linkedin-label">Connect with the dev<\/span>/,'linkedin label');
 for(const file of Object.values(pages)){const h=fs.readFileSync(file,'utf8');assert.match(h,/viewport-fit=cover/,file+' viewport-fit');assert.match(h,/@media\(max-width:768px\)/,file+' 768 query');assert.match(h,/@media\(max-width:420px\)/,file+' 420 query');}
-assert.match(land,/\.btn\.linkedin \.linkedin-label\{display:none\}/,'narrow phone hides linkedin label');
+assert.match(land,/@media\(max-width:420px\)[\s\S]*?\.btn\.linkedin\{flex:1 0 100%;justify-content:center;min-height:40px\}/,'narrow phone linkedin on its own row');
+assert(!/\.btn\.linkedin \.linkedin-label\{display:none\}/.test(land),'linkedin label stays visible on narrow phones');
 
 assert.match(land,/id="prev"/);assert.match(land,/id="next"/);assert.match(land,/touchstart/);assert.match(land,/mouseenter/);
 // No reference photos: slide/asset bytes differ from every reference image on disk, and no reference image names in assets
