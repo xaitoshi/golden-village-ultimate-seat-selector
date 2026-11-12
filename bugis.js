@@ -550,8 +550,6 @@ function start(){
   });
 
   goBtn.addEventListener('click',()=>{if(pov)exitSeat();else enterSeat();});
-  document.getElementById('source').addEventListener('click',()=>document.getElementById('notes').showModal());
-  document.getElementById('close').addEventListener('click',()=>document.getElementById('notes').close());
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(pov)exitSeat();}});
 
   clockEl.addEventListener('input',()=>{pause();step=+clockEl.value;hour=hourFromStep(step);applyCrowd();});

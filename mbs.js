@@ -10,9 +10,6 @@ const seatName=document.getElementById('seat-name');
 const seatType=document.getElementById('seat-type');
 const seatCount=document.getElementById('seat-count');
 const clearBtn=document.getElementById('clear');
-const notesBtn=document.getElementById('notes-btn');
-const notes=document.getElementById('notes');
-const closeNotes=document.getElementById('close');
 const zoomIn=document.getElementById('zoom-in');
 const zoomOut=document.getElementById('zoom-out');
 const zoomReset=document.getElementById('zoom-reset');
@@ -292,8 +289,6 @@ function clearSel(){
 levelBtns.forEach(b=>b.addEventListener('click',()=>showLevel(b.dataset.level)));
 if(clearBtn)clearBtn.addEventListener('click',clearSel);
 if(viewBtn)viewBtn.addEventListener('click',()=>{if(in3d)exit3D();else if(sel)enter3D(sel);});
-if(notesBtn&&notes)notesBtn.addEventListener('click',()=>notes.showModal());
-if(closeNotes&&notes)closeNotes.addEventListener('click',()=>notes.close());
 if(zoomIn)zoomIn.addEventListener('click',()=>{const {r}=viewport();zoomAt(r.left+r.width/2,r.top+r.height/2,1.28);});
 if(zoomOut)zoomOut.addEventListener('click',()=>{const {r}=viewport();zoomAt(r.left+r.width/2,r.top+r.height/2,1/1.28);});
 if(zoomReset)zoomReset.addEventListener('click',fit);
@@ -384,7 +379,6 @@ map.addEventListener('pointerleave',()=>{if(!pointers.size)hideTip();});
 addEventListener('keydown',e=>{
   if(e.target.closest&&e.target.closest('input,textarea,select,dialog'))return;
   if(e.key==='Escape'){
-    if(notes&&notes.open){notes.close();return;}
     if(in3d){exit3D();return;}
     clearSel();return;
   }

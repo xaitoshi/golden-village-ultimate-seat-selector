@@ -36,7 +36,6 @@ for(const [k,c] of Object.entries(CATS)){const b=document.createElement('button'
 $('legend').querySelector('.head').onclick=()=>$('legend').classList.toggle('closed');
 if(matchMedia('(max-width:768px)').matches)$('legend').classList.add('closed');
 {const b=document.createElement('button');b.className='ghost paint';b.id='paint';b.textContent='Show venue colours';b.onclick=()=>{paintMode=paintMode==='tickets'?'venue':'tickets';b.textContent=paintMode==='tickets'?'Show venue colours':'Show ticket colours';paint();};$('legend').append(b);}
-$('source').onclick=()=>$('notes').showModal();$('close').onclick=()=>$('notes').close();
 $('continue').onclick=()=>{if(transition)return;lookX=lookY=0;pov=!pov;document.body.classList.toggle('pov',pov);$('mode-label').textContent=pov?'02 / YOUR VIEW':'01 / PICK YOUR SEAT';$('continue').textContent=pov?'← Back to map':'View from here ↗';$('tip').style.display='none';if(pov)hideCrowdNear(selected);else restoreCrowd();paint();transition={from:progress,to:pov?1:0,start:performance.now(),duration:reduced.matches?1:2400};};
 let paint=()=>{},hideCrowdNear=()=>{},restoreCrowd=()=>{};
 try{renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});}catch(e){$('fallback').style.display='block';$('continue').disabled=true;$('continue').textContent='WebGL unavailable';}
