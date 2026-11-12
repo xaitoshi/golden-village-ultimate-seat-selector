@@ -7,5 +7,8 @@ require('esbuild').buildSync({entryPoints:['sis.js'],bundle:true,minify:true,for
 // Study 04: unofficial Starbucks Bugis Junction cafe, served at /starbucks-bugis/
 require('esbuild').buildSync({entryPoints:['bugis.js'],bundle:true,minify:true,format:'iife',outfile:'bugis-bundle.js'});{const bj=fs.readFileSync('bugis-bundle.js','utf8');const bh=fs.readFileSync('bugis.template.html','utf8').replace('/*APP*/',()=>bj.replaceAll('</script','<\\/script'));fs.mkdirSync('starbucks-bugis',{recursive:true});fs.writeFileSync('starbucks-bugis/index.html',bh);console.log('Bugis cafe HTML built:',Buffer.byteLength(bh),'bytes');}
 
+// Study 05: unofficial Sands Theatre seat plan, served at /mbs/
+require('esbuild').buildSync({entryPoints:['mbs.js'],bundle:true,minify:true,format:'iife',outfile:'mbs-bundle.js',loader:{'.json':'json'}});{const mj=fs.readFileSync('mbs-bundle.js','utf8');const mh=fs.readFileSync('mbs.template.html','utf8').replace('/*APP*/',()=>mj.replaceAll('</script','<\\/script'));fs.mkdirSync('mbs',{recursive:true});fs.writeFileSync('mbs/index.html',mh);console.log('Sands Theatre HTML built:',Buffer.byteLength(mh),'bytes');}
+
 // Landing page (root): hero slideshow of POV renders from the viewers (assets/slides, rendered by render-slides.cjs)
 {const l=fs.readFileSync('landing.template.html','utf8');fs.writeFileSync('index.html',l);console.log('Landing built:',Buffer.byteLength(l),'bytes');}

@@ -7,3 +7,5 @@ bundle.js
 sia-bundle.js
 sis-bundle.js
 bugis-bundle.js
+mbs-bundle.js
+__pycache__/
