@@ -25,4 +25,4 @@ function bedPose(b){b=Math.max(0,Math.min(1,b));return {backAngle:.16+(Math.PI/2
 function dividerOffset(p,comp){p=Math.max(0,Math.min(1,p));return -(1-p)*(comp?.56:.6);}
 function partner(s){if(s.window)return null;return seats.find(o=>o.row===s.row&&o.letter===(s.letter==='D'?'F':'D'))||null;}
 function smooth(t){return t*t*t*(t*(t*6-15)+10)}
-module.exports={bedPose,dividerOffset,partner,seats,ROWS,PITCH,SUITE_LEN,AISLE,SUITE_X,COMPANION,rowZ,info,smooth};
+module.exports={bedPose,dividerOffset,partner,seats,ROWS,PITCH,SUITE_LEN,AISLE,WIN_W,CEN_W,SUITE_X,COMPANION,rowZ,info,smooth};
