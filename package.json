@@ -4,7 +4,7 @@
   "description": "Golden Village Ultimate Seat Selector \u2014 independent Funan Deluxe auditorium study",
   "main": "index.js",
   "scripts": {
-    "test": "node test.cjs && node test-interaction.cjs && node test-sia.cjs && node test-sis.cjs && node test-site.cjs",
+    "test": "node test.cjs && node test-interaction.cjs && node test-sia.cjs && node test-sis.cjs && node test-bugis.cjs && node test-site.cjs",
     "build": "node build.cjs && node publish-build.cjs"
   },
   "keywords": [],
