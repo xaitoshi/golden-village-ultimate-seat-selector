@@ -18,6 +18,10 @@ const zoomOut=document.getElementById('zoom-out');
 const zoomReset=document.getElementById('zoom-reset');
 const levelBtns=[...document.querySelectorAll('.levels button')];
 const hint=document.getElementById('hint');
+const viewBtn=document.getElementById('view-seat');
+const world=document.getElementById('world');
+const {createTheatre}=require('./mbs3d.js');
+let theatre=null,theatreFailed=false,in3d=false,savedVB=null;
 
 const NS='http://www.w3.org/2000/svg';
 let levelId='stalls';
@@ -199,11 +203,13 @@ function renderChrome(){
     seatName.textContent=i.label;
     seatType.textContent=i.type;
     if(clearBtn)clearBtn.disabled=false;
+    if(in3d)seatType.textContent=i.type+' · your view of the stage';
   }else{
     seatName.textContent='Pick a seat';
-    seatType.textContent='Tap or click a chair, or zoom in first if the house looks tight';
+    seatType.textContent='Tap or click a chair to sit in it in 3D, or zoom in first if the house looks tight';
     if(clearBtn)clearBtn.disabled=true;
   }
+  if(viewBtn){viewBtn.disabled=!sel&&!in3d;viewBtn.textContent=in3d?'Back to plan':'View from seat';}
   if(seatCount)seatCount.textContent=`${lv.sold.toLocaleString('en-SG')} of ${plan.total.toLocaleString('en-SG')} seats on this plan`;
 }
 
@@ -240,6 +246,42 @@ function choose(id,opts){
   return true;
 }
 
+function setSeatParam(id){
+  try{const u=new URL(location.href);if(id)u.searchParams.set('seat',id);else u.searchParams.delete('seat');history.replaceState(null,'',u.pathname+u.search+u.hash);}catch(e){}
+}
+
+function enter3D(s,opts){
+  s=typeof s==='string'?find(s):s;
+  if(!s)return false;
+  if(sel!==s)choose(s);
+  if(!theatre&&!theatreFailed){theatre=createTheatre(world);if(!theatre)theatreFailed=true;}
+  if(!theatre){document.body.classList.add('no3d');return false;}
+  if(!in3d)savedVB={...vb,level:levelId};
+  in3d=true;
+  document.body.classList.add('view3d');
+  world.hidden=false;
+  hideTip();
+  theatre.enter(s,opts||{});
+  renderChrome();
+  setSeatParam(s.id);
+  return true;
+}
+
+function exit3D(){
+  if(!in3d)return;
+  in3d=false;
+  document.body.classList.remove('view3d');
+  world.hidden=true;
+  if(theatre)theatre.exit();
+  renderChrome();
+  setSeatParam(null);
+  if(sel&&savedVB&&savedVB.level===sel.level&&savedVB.w>1){showLevel(sel.level,true);vb={x:savedVB.x,y:savedVB.y,w:savedVB.w,h:savedVB.h};setVB();}
+  else if(sel)showLevel(sel.level,true);
+  else fit();
+  if(sel)mark(sel,true);
+  savedVB=null;
+}
+
 function clearSel(){
   if(sel)mark(sel,false);
   sel=null;
@@ -249,6 +291,7 @@ function clearSel(){
 
 levelBtns.forEach(b=>b.addEventListener('click',()=>showLevel(b.dataset.level)));
 if(clearBtn)clearBtn.addEventListener('click',clearSel);
+if(viewBtn)viewBtn.addEventListener('click',()=>{if(in3d)exit3D();else if(sel)enter3D(sel);});
 if(notesBtn&&notes)notesBtn.addEventListener('click',()=>notes.showModal());
 if(closeNotes&&notes)closeNotes.addEventListener('click',()=>notes.close());
 if(zoomIn)zoomIn.addEventListener('click',()=>{const {r}=viewport();zoomAt(r.left+r.width/2,r.top+r.height/2,1.28);});
@@ -321,6 +364,7 @@ function endPointer(e){
     const s=seatAt(e.clientX,e.clientY);
     if(s){
       choose(s);
+      enter3D(s);
       showTip(s,e.clientX,e.clientY);
     }
   }
@@ -341,7 +385,14 @@ addEventListener('keydown',e=>{
   if(e.target.closest&&e.target.closest('input,textarea,select,dialog'))return;
   if(e.key==='Escape'){
     if(notes&&notes.open){notes.close();return;}
+    if(in3d){exit3D();return;}
     clearSel();return;
+  }
+  if(in3d){
+    const k={ArrowLeft:[.08,0],ArrowRight:[-.08,0],ArrowUp:[0,.06],ArrowDown:[0,-.06]}[e.key];
+    if(k&&theatre){theatre.nudge(k[0],k[1]);e.preventDefault();}
+    if(e.key==='0'&&theatre){theatre.reset();e.preventDefault();}
+    return;
   }
   if(e.key==='+'||e.key==='='){const {r}=viewport();zoomAt(r.left+r.width/2,r.top+r.height/2,1.28);e.preventDefault();}
   if(e.key==='-'||e.key==='_'){const {r}=viewport();zoomAt(r.left+r.width/2,r.top+r.height/2,1/1.28);e.preventDefault();}
@@ -364,6 +415,6 @@ addEventListener('resize',()=>{
   setVB();
 });
 
-window.__seatscope={choose:(id)=>choose(id,{zoom:true}),level:()=>levelId,selected:()=>sel,info,fit,showLevel};
+window.__seatscope={choose:(id)=>choose(id,{zoom:true}),view:(id,opts)=>enter3D(id,opts),back:exit3D,in3d:()=>in3d,theatre:()=>theatre&&theatre.state(),level:()=>levelId,selected:()=>sel,info,fit,showLevel};
 
 showLevel('stalls');
