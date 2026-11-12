@@ -45,6 +45,115 @@ function resizeClock(){
   clockEl.value=String(step);
 }
 
+
+const planCanvas=document.getElementById('plan-canvas');
+const planAvail=document.getElementById('plan-avail');
+const planOpen=document.getElementById('plan-open');
+const planClose=document.getElementById('plan-close');
+const planEl=document.getElementById('plan');
+const XMIN=-4.6,XMAX=8.8,ZMIN=-4.6,ZMAX=10.8;
+
+function layoutPlan(){
+  if(!planCanvas)return null;
+  const cssW=planCanvas.clientWidth||270;
+  const cssH=Math.max(180, planCanvas.clientHeight||Math.round(cssW*(15/13)));
+  const dpr=Math.min(2, window.devicePixelRatio||1);
+  const W=Math.round(cssW*dpr), H=Math.round(cssH*dpr);
+  if(planCanvas.width!==W||planCanvas.height!==H){planCanvas.width=W;planCanvas.height=H;}
+  const pad=28*dpr;
+  const aw=W-pad*2, ah=H-pad*2;
+  const to=(x,z)=>({
+    x: pad+(x-XMIN)/(XMAX-XMIN)*aw,
+    y: pad+(ZMAX-z)/(ZMAX-ZMIN)*ah
+  });
+  return {W,H,dpr,pad,to,g:planCanvas.getContext('2d')};
+}
+function poly(g,pts,fill,stroke,lw){
+  g.beginPath();
+  pts.forEach((p,i)=>i?g.lineTo(p.x,p.y):g.moveTo(p.x,p.y));
+  g.closePath();
+  if(fill){g.fillStyle=fill;g.fill();}
+  if(stroke){g.strokeStyle=stroke;g.lineWidth=lw||1;g.stroke();}
+}
+function label(g,dpr,text,x,y,color){
+  g.fillStyle=color||'#c5cdc8';
+  g.font=`600 ${Math.max(9,10*dpr)}px Arial,sans-serif`;
+  g.textAlign='center';g.textBaseline='middle';
+  g.fillText(text,x,y);
+}
+function drawPlan(){
+  const L=layoutPlan();if(!L)return;
+  const {g,dpr,to,W,H}=L;
+  g.clearRect(0,0,W,H);
+  g.fillStyle='#121518';g.fillRect(0,0,W,H);
+  // Terrace L (front arcade + side arcade)
+  const terr=[to(-4.4,-4.4),to(8.6,-4.4),to(8.6,0),to(0,0),to(0,10.6),to(-4.4,10.6)];
+  poly(g,terr,'#3c3c39','#2a2a28',1);
+  // Interior floor
+  poly(g,[to(0,0),to(8.4,0),to(8.4,10.5),to(0,10.5)],'#cbb89a','#8a7358',1*dpr);
+  // Glass shopfront
+  g.strokeStyle='#9eb8c4';g.lineWidth=2*dpr;g.beginPath();
+  const a=to(0,10.5),b=to(0,0),c=to(8.4,0);
+  g.moveTo(a.x,a.y);g.lineTo(b.x,b.y);g.lineTo(c.x,c.y);g.stroke();
+  // Counter
+  poly(g,[to(0.4,9.35),to(7.8,9.35),to(7.8,10.5),to(0.4,10.5)],'#3d2a1c','#2a1c12',1);
+  // Communal table
+  poly(g,[to(2.28,3.55),to(3.52,3.55),to(3.52,6.75),to(2.28,6.75)],'#6a4a2e','#4a321c',1);
+  // Merch block
+  poly(g,[to(4.7,7.85),to(6.5,7.85),to(6.5,8.45),to(4.7,8.45)],'#2a2a2a',null,1);
+  // Zone labels
+  const tc=to(4.1,9.92), tcomm=to(2.9,5.15), twin=to(0.72,7.35), tins=to(5.55,6.55), tft=to(4.0,-2.15), tst=to(-2.2,5.5);
+  label(g,dpr,'Counter',tc.x,tc.y,'#e8d5b5');
+  label(g,dpr,'Inside',tins.x,tins.y,'#3a2e22');
+  label(g,dpr,'Communal',tcomm.x,tcomm.y-6*dpr,'#f0e4d0');
+  label(g,dpr,'table',tcomm.x,tcomm.y+6*dpr,'#f0e4d0');
+  label(g,dpr,'Window',twin.x,twin.y,'#3a2e22');
+  label(g,dpr,'Terrace',tft.x,tft.y,'#d4d4ce');
+  label(g,dpr,'Terrace',tst.x,tst.y,'#d4d4ce');
+  // Seats
+  const r=6.2*dpr;
+  seats.forEach(s=>{
+    const p=to(s.x,s.z);
+    const isTaken=taken.has(s.id), isSel=sel&&sel.id===s.id;
+    g.beginPath();g.arc(p.x,p.y,isSel?r+1.2*dpr:r,0,Math.PI*2);
+    g.fillStyle=isSel?(isTaken?'#ff7a6e':'#b9ffc6'):(isTaken?'#d45a4c':'#7ed98a');
+    g.fill();
+    if(isSel){g.strokeStyle='#ffffff';g.lineWidth=2.2*dpr;g.stroke();}
+  });
+  const free=seats.length-taken.size;
+  if(planAvail)planAvail.textContent=free+' of '+seats.length+' seats available';
+}
+function seatAtPlan(ev){
+  const L=layoutPlan();if(!L)return null;
+  const rect=planCanvas.getBoundingClientRect();
+  const x=(ev.clientX-rect.left)*(L.W/rect.width);
+  const y=(ev.clientY-rect.top)*(L.H/rect.height);
+  let best=null,bestD=Infinity;
+  const max=(8.2*L.dpr)*(8.2*L.dpr);
+  seats.forEach(s=>{
+    const p=L.to(s.x,s.z);
+    const d=(p.x-x)*(p.x-x)+(p.y-y)*(p.y-y);
+    if(d<bestD){bestD=d;best=s;}
+  });
+  return bestD<=max?best:null;
+}
+function openPlan(){document.body.classList.add('map');if(planOpen)planOpen.setAttribute('aria-expanded','true');drawPlan();}
+function closePlan(){document.body.classList.remove('map');if(planOpen)planOpen.setAttribute('aria-expanded','false');}
+
+if(planCanvas){
+  planCanvas.addEventListener('click',ev=>{
+    const s=seatAtPlan(ev);if(!s)return;
+    if(window.__seatscope&&window.__seatscope.choose)window.__seatscope.choose(s.id);
+    else {sel=s;drawPlan();}
+  });
+  planCanvas.addEventListener('pointermove',ev=>{
+    planCanvas.style.cursor=seatAtPlan(ev)?'pointer':'default';
+  });
+}
+if(planOpen)planOpen.addEventListener('click',openPlan);
+if(planClose)planClose.addEventListener('click',closePlan);
+addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('map'))closePlan();});
+
 const renderer=(()=>{try{const r=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});r.setPixelRatio(Math.min(devicePixelRatio,2));r.shadowMap.enabled=true;r.shadowMap.type=THREE.PCFSoftShadowMap;r.outputColorSpace=THREE.SRGBColorSpace;r.toneMapping=THREE.ACESFilmicToneMapping;r.toneMappingExposure=1.05;return r;}catch(e){fallback.style.display='block';world.style.display='none';return null;}})();
 if(!renderer){buildFallback();}
 else start();
@@ -219,7 +328,7 @@ function start(){
     g.add(cyl(matBlack,.04,.04,.25,0,0.1,0));
     const blades=new THREE.Group();
     for(let i=0;i<3;i++){const b=box(matBlack,1.15,.02,.12,0.5,0,0);b.rotation.y=i*Math.PI*2/3;blades.add(b);}
-    g.add(blades);arcade.add(g);fans.push(blades);
+    blades.rotation.y=0.35;g.add(blades);arcade.add(g);
   }
   fan(2.0,-2.0);fan(6.2,-2.0);fan(-2.0,2.2);fan(-2.0,6.5);
   // Neighbouring generic shop volumes so the corner reads as a mall
@@ -492,7 +601,7 @@ function start(){
       if(pov && taken.has(sel.id))exitSeat();
       else syncPanel();
     }
-    drawMini();
+    drawMini();drawPlan();
   }
 
   function syncPanel(){
@@ -551,7 +660,7 @@ function start(){
   let last=performance.now();
   function frame(now){
     const dt=Math.min(.05,(now-last)/1000);last=now;
-    fans.forEach(f=>f.rotation.y+=dt*1.4);
+    // Terrace fans stay static, no spin.
     // Crowd playback is driven by setInterval in play(), not the frame loop.
     if(!transitioning)applyCam();
     projectHits();
@@ -559,12 +668,12 @@ function start(){
     requestAnimationFrame(frame);
   }
 
-  function onResize(){applyCam();}
+  function onResize(){applyCam();drawPlan();}
   window.addEventListener('resize',onResize);
 
   resizeClock();applyCrowd();
   if(taken.has(sel.id)){const free=seats.find(s=>!taken.has(s.id))||sel;sel=free;}
-  choose(sel.id);applyCam();
+  choose(sel.id);applyCam();drawPlan();
   requestAnimationFrame(frame);
 
   window.__seatscope={
@@ -618,3 +727,5 @@ if(!window.__seatscope){
     getState(){return {seat:sel&&sel.id,pov:false,hour,weekend,playing:false,available:seats.length,total:seats.length,taken:[]};}
   };
 }
+
+drawPlan();

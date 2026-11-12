@@ -42,4 +42,14 @@ assert.deepEqual(m.takenIds(18,true),m.takenIds(18,true));
  assert(m.seats.filter(s=>s.kind==='terrace'&&lunch.has(s.id)).length>0,'lunch uses terrace');
  const eve=new Set(m.takenIds(19,false));
  assert(m.seats.filter(s=>s.kind==='terrace'&&eve.has(s.id)).length>0,'evening uses terrace');}
+
+const fs=require('node:fs');
+const html=fs.readFileSync('starbucks-bugis/index.html','utf8');
+assert.match(html,/Seat map/);
+assert.match(html,/id="plan-canvas"/);
+for(const z of ['Inside','Window','Communal table','Terrace','Counter']){
+  // zone words appear in JS drawPlan, which is inlined into the page
+  assert.match(html,new RegExp(z));
+}
+assert.match(html,/Taken at this hour/);
 console.log('PASS bugis: 46 unique seats, dash-free labels, weekday/weekend hours, commute/lunch/study/evening curve, deterministic taken ids, armchairs fill before terrace in the morning.');
