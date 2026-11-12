@@ -17,8 +17,9 @@ const seen=new Set();for(const s of S){assert(/^\/(movie|sia|sis)\//.test(s.href
 assert.deepEqual([...seen].sort(),['movie','sia','sis'],'slides cover all three viewers');
 for(const v of ['/movie/','/sia/','/sis/'])assert(land.includes(`class="card" href="${v}"`),'card '+v);
 assert.match(land,/href="https:\/\/www\.linkedin\.com\/in\/anthony-ng-yp"/,'linkedin href');
-assert.match(land,/<a class="btn ghost" href="https:\/\/www\.linkedin\.com\/in\/anthony-ng-yp" target="_blank" rel="noopener noreferrer">/,'linkedin button attrs');
-assert.match(land,/>LinkedIn<\/a>/,'linkedin label');
+assert.match(land,/<a class="btn ghost linkedin" href="https:\/\/www\.linkedin\.com\/in\/anthony-ng-yp" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">/,'linkedin button attrs');
+assert.match(land,/<span class="linkedin-label">LinkedIn<\/span>/,'linkedin label');
+for(const file of Object.values(pages)){const h=fs.readFileSync(file,'utf8');assert.match(h,/viewport-fit=cover/,file+' viewport-fit');assert.match(h,/@media\(max-width:768px\)/,file+' 768 query');assert.match(h,/@media\(max-width:420px\)/,file+' 420 query');}
 
 assert.match(land,/id="prev"/);assert.match(land,/id="next"/);assert.match(land,/touchstart/);assert.match(land,/mouseenter/);
 // No reference photos: slide/asset bytes differ from every reference image on disk, and no reference image names in assets
