@@ -22,6 +22,10 @@ assert.match(land,/<span class="linkedin-label">Connect with the dev<\/span>/,'l
 for(const file of Object.values(pages)){const h=fs.readFileSync(file,'utf8');assert.match(h,/viewport-fit=cover/,file+' viewport-fit');assert.match(h,/@media\(max-width:768px\)/,file+' 768 query');assert.match(h,/@media\(max-width:420px\)/,file+' 420 query');}
 assert.match(land,/\.btn\.linkedin \.linkedin-label\{display:none\}/,'narrow phone hides linkedin label');
 
+// Analytics snippet stays on every page
+for(const file of Object.values(pages)){const h=fs.readFileSync(file,'utf8');assert.match(h,/_vercel\/insights\/script\.js/,file+' analytics');assert.match(h,/window\.va=window\.va/,file+' va stub');}
+// SIA smash mode entry
+{const h=fs.readFileSync('sia/index.html','utf8');assert.match(h,/<button class="action alt" id="smash"[^>]*>f\*\*k it<\/button>/);assert.match(h,/class="actions"/);assert.match(h,/body\.smash #look/);assert.match(h,/Click or tap to swing/);}
 assert.match(land,/id="prev"/);assert.match(land,/id="next"/);assert.match(land,/touchstart/);assert.match(land,/mouseenter/);
 // No reference photos: slide/asset bytes differ from every reference image on disk, and no reference image names in assets
 const refDirs=['/workspace/stadium-ref'];const refHashes=new Set();const walk=d=>{if(!fs.existsSync(d))return;for(const e of fs.readdirSync(d,{withFileTypes:true})){const p=path.join(d,e.name);if(e.isDirectory())walk(p);else if(/\.(png|jpe?g|webp)$/i.test(e.name))refHashes.add(crypto.createHash('sha1').update(fs.readFileSync(p)).digest('hex'));}};refDirs.forEach(walk);for(const f of fs.readdirSync('.').filter(f=>/\.(png|jpe?g)$/i.test(f)))refHashes.add(crypto.createHash('sha1').update(fs.readFileSync(f)).digest('hex'));
@@ -39,4 +43,4 @@ for(const s of S)for(const k of ['k','t','s','alt'])assert(!DASH.test(s[k]),`das
 assert.match(fs.readFileSync('favicon.svg','utf8'),/^<svg /);const ico=fs.readFileSync('favicon.ico');assert.equal(ico.readUInt16LE(2),1,'ICO type');
 // Static output config: trailing slashes so /movie -> /movie/
 assert.equal(JSON.parse(fs.readFileSync('vercel.json','utf8')).trailingSlash,true);
-console.log(`PASS site: 4 routes (/, /movie/, /sia/, /sis/) with shared Seatwise nav + current tab, titles/OG/favicon, ?seat= deep links, landing ${S.length} slides (WebP 1600w+800w, all 3 viewers), 3 cards, carousel controls, no reference images, favicon.ico/svg, trailing slash config, no dashes in visible copy.`);
+console.log(`PASS site: 4 routes (/, /movie/, /sia/, /sis/) with shared Seatwise nav + current tab, titles/OG/favicon, ?seat= deep links, landing ${S.length} slides (WebP 1600w+800w, all 3 viewers), 3 cards, carousel controls, no reference images, favicon.ico/svg, trailing slash config, no dashes in visible copy, analytics on all pages, SIA smash button.`);
