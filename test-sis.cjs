@@ -41,7 +41,7 @@ const pen=m.zoneSpot(m.ZONES[0]);assert.equal(m.eyeOf(pen)[1],m.RAKE.standEye);a
 assert.equal(m.smooth(0),0);assert.equal(m.smooth(1),1);
 // Built page: nav on every page, no embedded raster images on the SIS page, disclaimer present
 const sis=fs.readFileSync('sis/index.html','utf8');
-assert.match(sis,/<a href="\/sis\/" aria-current="page">Indoor Stadium<\/a>/);assert.match(sis,/<title>Seatwise \| /);
+assert.match(sis,/<a href="\/sis\/" aria-current="page">Singapore Indoor Stadium<\/a>/);assert.match(sis,/<button[^>]*aria-current="page"[^>]*>Theatres</);assert.match(sis,/<title>Seatwise \| /);
 assert(!/data:image\/(png|jpe?g|webp)/.test(sis),'no embedded photos/plan on SIS page');assert(!/<img/i.test(sis));
 assert.match(sis,/not affiliated with BABYMONSTER, YG Entertainment, Live Nation, Ticketmaster or The Kallang/);assert.match(sis,/plan not drawn to scale/);assert.match(sis,/excl\. booking fees/);
 assert(!fs.readdirSync('.').some(f=>/babymonster|official-seat-plan/i.test(f)),'reference images not in repo');

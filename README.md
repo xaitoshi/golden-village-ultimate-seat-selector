@@ -6,7 +6,7 @@ Unofficial fan concept. Interactive 3D seat previews: pick a seat, double-click 
 - `/movie/` — Study 01, GV Funan Deluxe cinema (index.template.html → movie/index.html). Moved from `/`; old `/?seat=…` or `/#E4`-style links are forwarded to `/movie/`.
 - `/sia/` — Study 02, SIA-style 2027 Business. `/sis/` — Study 03, Singapore Indoor Stadium · BABYMONSTER [CHOOM].
 - Every viewer accepts `?seat=<id>` (e.g. `/sis/?seat=220-17-6`, `/sia/?seat=14D`, `/movie/?seat=E4`) to preselect a seat.
-- Shared tab bar on every page: ◉ Seatwise (home) | Cinema | SIA Business | Indoor Stadium. Favicon: favicon.svg + favicon.ico. OG image: assets/og.jpg.
+- Shared tab bar on every page: ◉ Seatwise (home) | Cinema | Theatres (dropdown: Singapore Indoor Stadium, MBS Theatre) | SIA. Cafe is kept as a page at /starbucks-bugis/ but is not linked in the tab bar. Favicon: favicon.svg + favicon.ico. OG image: assets/og.jpg.
 - Slides in assets/slides are rendered from Seatwise's own viewers with `render-slides.cjs` (headless Chrome, UI hidden) and converted by `optimize-slides.py` to WebP 1600w + 800w. No venue, airline, press or reference photos are used.
 - Build: `npm run build` (build.cjs + publish-build.cjs → dist/, including a static `vercel.json` with `trailingSlash: true`). Tests: `npm test` (cinema, interaction, SIA, SIS, site).
 
