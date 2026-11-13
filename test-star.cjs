@@ -2,10 +2,10 @@
 const assert=require('node:assert/strict');
 const m=require('./star-model.cjs');
 const DASH=/[–—]|\s-\s|[A-Za-z]-[A-Za-z]|\d-\d/;
-assert.equal(m.TOTAL,5141);
+assert.equal(m.TOTAL,5142);
 assert.equal(m.PUBLISHED,5142);
 assert.equal(m.LEVELS.stalls.seats.length,1903);
-assert.equal(m.LEVELS.circle1.seats.length,1811);
+assert.equal(m.LEVELS.circle1.seats.length,1812);
 assert.equal(m.LEVELS.circle2.seats.length,1427);
 assert.equal(m.LEVELS.stalls.box,16);
 assert.equal(m.LEVELS.stalls.wheelchair,27);
@@ -35,4 +35,4 @@ assert.deepEqual(m.LEVEL_ORDER,['stalls','circle1','circle2']);
 assert.equal(m.LEVELS.stalls.name,'Stalls');
 assert.equal(m.LEVELS.circle1.name,'Circle 1');
 assert.equal(m.LEVELS.circle2.name,'Circle 2');
-console.log('PASS star: 5,141 drawn seats (1,903 stalls, 1,811 Circle 1, 1,427 Circle 2) from a published house of 5,142, unique ids, dash-free labels');
+console.log('PASS star: 5,142 seats (1,903 stalls, 1,812 Circle 1, 1,427 Circle 2), unique ids, dash-free labels');
