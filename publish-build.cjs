@@ -1,8 +1,8 @@
 const fs=require('fs');
 fs.rmSync('dist',{recursive:true,force:true});
-for(const d of ['movie','sia','sis','starbucks-bugis','mbs'])fs.mkdirSync('dist/'+d,{recursive:true});
+for(const d of ['movie','sia','sis','starbucks-bugis','mbs','star'])fs.mkdirSync('dist/'+d,{recursive:true});
 fs.copyFileSync('index.html','dist/index.html');
-for(const d of ['movie','sia','sis','starbucks-bugis','mbs'])fs.copyFileSync(d+'/index.html','dist/'+d+'/index.html');
+for(const d of ['movie','sia','sis','starbucks-bugis','mbs','star'])fs.copyFileSync(d+'/index.html','dist/'+d+'/index.html');
 fs.cpSync('assets','dist/assets',{recursive:true});
 for(const f of ['favicon.svg','favicon.ico'])fs.copyFileSync(f,'dist/'+f);
 // static-only Vercel config for the uploaded output (no build): canonical trailing slashes so /movie -> /movie/

@@ -10,5 +10,9 @@ require('esbuild').buildSync({entryPoints:['bugis.js'],bundle:true,minify:true,f
 // Study 05: unofficial Sands Theatre seat plan, served at /mbs/
 require('esbuild').buildSync({entryPoints:['mbs.js'],bundle:true,minify:true,format:'iife',outfile:'mbs-bundle.js',loader:{'.json':'json'}});{const mj=fs.readFileSync('mbs-bundle.js','utf8');const mh=fs.readFileSync('mbs.template.html','utf8').replace('/*APP*/',()=>mj.replaceAll('</script','<\\/script'));fs.mkdirSync('mbs',{recursive:true});fs.writeFileSync('mbs/index.html',mh);console.log('Sands Theatre HTML built:',Buffer.byteLength(mh),'bytes');}
 
+
+// Study 06: unofficial The Star Theatre seat plan, served at /star/
+require('esbuild').buildSync({entryPoints:['star.js'],bundle:true,minify:true,format:'iife',outfile:'star-bundle.js',loader:{'.json':'json'}});{const sj=fs.readFileSync('star-bundle.js','utf8');const sh=fs.readFileSync('star.template.html','utf8').replace('/*APP*/',()=>sj.replaceAll('</script','<\/script'));fs.mkdirSync('star',{recursive:true});fs.writeFileSync('star/index.html',sh);console.log('The Star Theatre HTML built:',Buffer.byteLength(sh),'bytes');}
+
 // Landing page (root): hero slideshow of POV renders from the viewers (assets/slides, rendered by render-slides.cjs)
 {const l=fs.readFileSync('landing.template.html','utf8');fs.writeFileSync('index.html',l);console.log('Landing built:',Buffer.byteLength(l),'bytes');}
