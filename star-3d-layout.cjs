@@ -87,6 +87,17 @@ for(const id of ['stalls']){
     });
   }
 }
+// Box A and Box C sit in the side walls next to the stage. The default horseshoe
+// envelope pinches in to 12 m in front of them, so the full height side wall cuts
+// across their view of the stage. Keep the wall at least as wide as the boxes from
+// the proscenium through the box, so the wall stays behind the seats.
+for(const b of boxes){
+  const zEnd=b.zc+b.len/2;
+  for(let i=0;i<halfW.length;i++){
+    const z=WZ0+i*WSTEP;
+    if(z<=zEnd)halfW[i]=Math.max(halfW[i],b.wall);
+  }
+}
 const byId=new Map(out.map(s=>[s.id,s]));
 const EYE=1.15;
 function eye(s){const e=s.kind==='wheel'?1.25:EYE,b=.1;const yaw=s.yaw||0;return {x:s.x+Math.sin(yaw)*b,y:s.y+e,z:s.z+Math.cos(yaw)*b};}
